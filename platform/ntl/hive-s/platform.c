@@ -18,58 +18,58 @@
  #include <sbi_utils/serial/litex-uart.h>
  #include <sbi_utils/timer/aclint_mtimer.h>
  
- #define VEX_DEFAULT_HART_COUNT	8
- #define VEX_DEFAULT_PLATFORM_FEATURES	SBI_PLATFORM_HAS_MFAULTS_DELEGATION
- #define VEX_DEFAULT_UART_ADDR	0xf0001000
- #define VEX_DEFAULT_PLIC_ADDR	0xf0c00000
- #define VEX_DEFAULT_PLIC_NUM_SOURCES	4
- #define VEX_DEFAULT_CLINT_ADDR	0xF0010000
- #define VEX_DEFAULT_ACLINT_MTIMER_FREQ	100000000
- #define VEX_DEFAULT_ACLINT_MSWI_ADDR	\
-		 (VEX_DEFAULT_CLINT_ADDR + CLINT_MSWI_OFFSET)
- #define VEX_DEFAULT_ACLINT_MTIMER_ADDR	\
-		 (VEX_DEFAULT_CLINT_ADDR + CLINT_MTIMER_OFFSET)
- #define VEX_DEFAULT_HART_STACK_SIZE	8192
+ #define NTL_HIVE_S_HART_COUNT	8
+ #define NTL_HIVE_S_PLATFORM_FEATURES	SBI_PLATFORM_HAS_MFAULTS_DELEGATION
+ #define NTL_HIVE_S_UART_ADDR	0xf0001000
+ #define NTL_HIVE_S_PLIC_ADDR	0xf0c00000
+ #define NTL_HIVE_S_PLIC_NUM_SOURCES	4
+ #define NTL_HIVE_S_CLINT_ADDR	0xF0010000
+ #define NTL_HIVE_S_ACLINT_MTIMER_FREQ	100000000
+ #define NTL_HIVE_S_ACLINT_MSWI_ADDR	\
+		 (NTL_HIVE_S_CLINT_ADDR + CLINT_MSWI_OFFSET)
+ #define NTL_HIVE_S_ACLINT_MTIMER_ADDR	\
+		 (NTL_HIVE_S_CLINT_ADDR + CLINT_MTIMER_OFFSET)
+ #define NTL_HIVE_S_HART_STACK_SIZE	8192
  
  /* clang-format on */
  
  static struct plic_data plic = {
-	 .addr = VEX_DEFAULT_PLIC_ADDR,
-	 .num_src = VEX_DEFAULT_PLIC_NUM_SOURCES,
+	 .addr = NTL_HIVE_S_PLIC_ADDR,
+	 .num_src = NTL_HIVE_S_PLIC_NUM_SOURCES,
  };
  
  static struct aclint_mswi_data mswi = {
-	 .addr = VEX_DEFAULT_ACLINT_MSWI_ADDR,
+	 .addr = NTL_HIVE_S_ACLINT_MSWI_ADDR,
 	 .size = ACLINT_MSWI_SIZE,
 	 .first_hartid = 0,
-	 .hart_count = VEX_DEFAULT_HART_COUNT,
+	 .hart_count = NTL_HIVE_S_HART_COUNT,
  };
  
  static struct aclint_mtimer_data mtimer = {
-	 .mtime_freq = VEX_DEFAULT_ACLINT_MTIMER_FREQ,
-	 .mtime_addr = VEX_DEFAULT_ACLINT_MTIMER_ADDR +
+	 .mtime_freq = NTL_HIVE_S_ACLINT_MTIMER_FREQ,
+	 .mtime_addr = NTL_HIVE_S_ACLINT_MTIMER_ADDR +
 			   ACLINT_DEFAULT_MTIME_OFFSET,
 	 .mtime_size = ACLINT_DEFAULT_MTIME_SIZE,
-	 .mtimecmp_addr = VEX_DEFAULT_ACLINT_MTIMER_ADDR +
+	 .mtimecmp_addr = NTL_HIVE_S_ACLINT_MTIMER_ADDR +
 			   ACLINT_DEFAULT_MTIMECMP_OFFSET,
 	 .mtimecmp_size = ACLINT_DEFAULT_MTIMECMP_SIZE,
 	 .first_hartid = 0,
-	 .hart_count = VEX_DEFAULT_HART_COUNT,
+	 .hart_count = NTL_HIVE_S_HART_COUNT,
 	 .has_64bit_mmio = true,
  };
  
  /*
-  * VexRiscv platform early initialization.
+  * NTL Hive-S platform early initialization.
   */
- static int vex_early_init(bool cold_boot)
+ static int ntl_hive_s_early_init(bool cold_boot)
  {
 	 return 0;
  }
  
  /*
-  * VexRiscv platform final initialization.
+  * NTL Hive-S platform final initialization.
   */
- static int vex_final_init(bool cold_boot)
+ static int ntl_hive_s_final_init(bool cold_boot)
  {
 	 void *fdt;
  
@@ -83,17 +83,17 @@
  }
  
  /*
-  * Initialize the vexRiscv console.
+  * Initialize the NTL Hive-S console.
   */
- static int vex_console_init(void)
+ static int ntl_hive_s_console_init(void)
  {
-	 return litex_uart_init(VEX_DEFAULT_UART_ADDR);
+	 return litex_uart_init(NTL_HIVE_S_UART_ADDR);
  }
  
  /*
-  * Initialize the vexRiscv interrupt controller for current HART.
+  * Initialize the NTL Hive-S interrupt controller for current HART.
   */
- static int vex_irqchip_init(bool cold_boot)
+ static int ntl_hive_s_irqchip_init(bool cold_boot)
  {
 	 int rc;
 	 u32 hartid = current_hartid();
@@ -111,7 +111,7 @@
  /*
   * Initialize IPI for current HART.
   */
- static int vex_ipi_init(bool cold_boot)
+ static int ntl_hive_s_ipi_init(bool cold_boot)
  {
 	 int rc;
  
@@ -125,9 +125,9 @@
  }
  
  /*
-  * Initialize vexRiscv timer for current HART.
+  * Initialize NTL Hive-S timer for current HART.
   */
- static int vex_timer_init(bool cold_boot)
+ static int ntl_hive_s_timer_init(bool cold_boot)
  {
 	 int rc;
 	 if (cold_boot) {
@@ -143,23 +143,22 @@
   * Platform descriptor.
   */
  const struct sbi_platform_operations platform_ops = {
-	 .early_init = vex_early_init,
-	 .final_init = vex_final_init,
-	 .console_init = vex_console_init,
-	 .irqchip_init = vex_irqchip_init,
-	 .ipi_init = vex_ipi_init,
-	 .timer_init = vex_timer_init
+	 .early_init = ntl_hive_s_early_init,
+	 .final_init = ntl_hive_s_final_init,
+	 .console_init = ntl_hive_s_console_init,
+	 .irqchip_init = ntl_hive_s_irqchip_init,
+	 .ipi_init = ntl_hive_s_ipi_init,
+	 .timer_init = ntl_hive_s_timer_init
  };
  
  const struct sbi_platform platform = {
 	 .opensbi_version = OPENSBI_VERSION,
 	 .platform_version = SBI_PLATFORM_VERSION(0x0, 0x01),
-	 .name = "LiteX / VexRiscv-SMP",
-	 .features = VEX_DEFAULT_PLATFORM_FEATURES,
-	 .hart_count = VEX_DEFAULT_HART_COUNT,
-	 .hart_stack_size = VEX_DEFAULT_HART_STACK_SIZE,
+	 .name = "NTL / Hive-S",
+	 .features = NTL_HIVE_S_PLATFORM_FEATURES,
+	 .hart_count = NTL_HIVE_S_HART_COUNT,
+	 .hart_stack_size = NTL_HIVE_S_HART_STACK_SIZE,
 	 .heap_size =
-		 SBI_PLATFORM_DEFAULT_HEAP_SIZE(VEX_DEFAULT_HART_COUNT),
+		 SBI_PLATFORM_DEFAULT_HEAP_SIZE(NTL_HIVE_S_HART_COUNT),
 	 .platform_ops_addr = (unsigned long)&platform_ops
  };
- 
