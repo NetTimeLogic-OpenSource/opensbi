@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  *
  * Copyright (c) 2020 Dolu1990 <charles.papon.90@gmail.com>
+ * Copyright (c) 2025 Kevin Schaerer <kevin.schaerer@nettimelogic.com>
  *
  */
 
