@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: BSD-2-Clause
+
+config PLATFORM_NTL_HIVE_S
+	bool
+	select FDT
+	select IPI_MSWI
+	select IRQCHIP_PLIC
+	select SERIAL_LITEX
+	select TIMER_MTIMER
+	default y
